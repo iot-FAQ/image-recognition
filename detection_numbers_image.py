@@ -20,11 +20,15 @@ xfx=xf
 digit=1
 #LOAING IMAGE-----------------------------------------------------------------------------------------------------------
 image_name=(raw_input("WRITE THE NAME OF THE PICTURE:"))
-image = cv2.imread('images/'+str(image_name)+'.jpg')
+image = cv2.imread('images/'+str(image_name))
+
 print "WAIT A MOMENT PLEASE..... PROCESSING"
 cont1, cont2=image_name.split("img")
+cont2, cont3=cont2.split(".")
 cont=int(cont2)
+print "CONT", cont
 image = cv2.resize(image, (400, 250))
+first = image
 #--------detecting dial ---------
 sample = cv2.imread("sample_big.jpg")
 sample_h, sample_w, sample_k = sample.shape
@@ -63,7 +67,7 @@ mascar=np.zeros(image.shape[:2], dtype="uint8")
 cv2.rectangle(mascar, (xf, rois), (xf+400, rois+50), 255, -1)
 image2=cv2.bitwise_and(gris,gris,mask=mascar)
 
-cv2.imshow(".gimage1", image2)
+#cv2.imshow(".gimage1", image2)
 T3=mahotas.thresholding.otsu(image2)
 gris_copy=gris.copy()
 gris_2=gris.copy()
@@ -103,7 +107,7 @@ mascara=np.zeros(image.shape[:2], dtype="uint8")
 cv2.rectangle(mascara, (xf, rois), (xf+400, rois+50), 255, -1)
 image1=cv2.bitwise_and(grises,grises,mask=mascara)
 #cv2.imshow("MEDIDOR ELECTRICO",image)
-cv2.waitKey(0)
+#cv2.waitKey(0)
 #FILTER-----------------------------------------------------------------------------------------------------------------
 blurred = cv2.GaussianBlur(image1, (7,7),0)
 blurred = cv2.medianBlur(blurred,1)
@@ -115,7 +119,7 @@ lower = (int(max(0, (1.0 - sigma) * v)))
 upper = (int(min(255, (1.0 + sigma) * v)))
 #EDGE DETECTION---------------------------------------------------------------------------------------------------------
 edged = cv2.Canny(blurred, lower, upper)
-cv2.imshow("edged",edged)
+#cv2.imshow("edged",edged)
 (cnts, _) = cv2.findContours(edged.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_NONE)
 cnts = sorted([(c, cv2.boundingRect(c)[0]) for c in cnts], key = lambda x: x[1])
 yf=rois
@@ -129,20 +133,20 @@ for (c,_) in cnts:
     (x, y, w, h) = cv2.boundingRect(c)
     if w > 11 and h > 13 and w<50:
       if(x-xfx)>10:
-        if digit2<9:
+        if digit2<size:
                 xfx=x+w
                 yf=y
                 roi2=gris[y:y+h,x:x+w]
-                cv2.imshow("roi2", roi2)
-                cv2.waitKey(0)
+                #cv2.imshow("roi2", roi2)
+                #cv2.waitKey(0)
                 roi=support_library.recon_borde(roi2)
                 roi_small = cv2.resize(roi,(10,10))
                 roi_small = roi_small.reshape((1,100))
                 roi_small = np.float32(roi_small)
                 retval, results, neigh_resp, dists = model.find_nearest(roi_small, k = 1)
                 string = str(int((results[0][0])))
-                cv2.putText(image, str(string), (x - 10, y - 10),cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 2)
-                cv2.imshow("MEDIDOR ELECTRICO",image)
+                cv2.putText(first, str(string), (x - 15, y - 15),cv2.FONT_HERSHEY_SIMPLEX, 1.5, (255, 0, 0), 3)
+                cv2.imshow("MEDIDOR ELECTRICO",first)
                 cv2.waitKey(0)
 #CONCATENATE NUMBERS----------------------------------------------------------------------------------------------------
                 digit=support_library.concatenar(results,digit,digit)
@@ -152,7 +156,11 @@ for (c,_) in cnts:
                 digit2=digit2+1
                 digit-=1
 #NUMBER DETECTED--------------------------------------------------------------------------------------------------------
-result1= int(result)
-
+try:
+    result1= int(result)
+except (RuntimeError, TypeError, NameError):
+    result1=0
 
 print 'Result:',result1
+
+

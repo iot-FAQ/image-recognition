@@ -33,8 +33,8 @@ for filename in os.listdir('./samples/'):
     cv2.destroyWindow('norm')
     cv2.imshow('Numero', image)
     key = cv2.waitKey(0) & 0xFF
-    print key
-    print int("4")
+    print "key=", key
+    #print int("4")
     print 'You pressed %d (0x%x), 2LSB: %d (%s)' % (key, key, key % 2**16,
     repr(chr(key%256)) if key%256 < 128 else '?')
     if key == 27:
