@@ -14,7 +14,7 @@ import os
 path, dirs, files = next(os.walk("./images/"))
 images_count = len(files)
 #LOAING IMAGE-----------------------------------------------------------------------------------------------------------
-"""
+
 for filename in os.listdir('./images/'):
     print filename
     cont1,cont2= filename.split("img")
@@ -22,6 +22,7 @@ for filename in os.listdir('./images/'):
     cont=cont2
 """
 for cont in range(30,34,1):#change the new picture in the folder images
+"""
     xf=1
     xfx=xf
     image = cv2.imread('images/'+'img'+str(cont)+'.bmp')
@@ -167,6 +168,6 @@ for cont in range(30,34,1):#change the new picture in the folder images
                 cv2.imshow("roi",roi)
                 cv2.waitKey(0)
 
-                #cv2.imwrite(("samples/"+str(digit)+"_"+str(cont)+'.png'),guardar)
+                cv2.imwrite(("samples/"+str(digit)+"_"+str(cont)+'.png'),guardar)
                 digit2+=1
                 digit+=1
